@@ -24,3 +24,5 @@ jobs:
         run: python3 scripts/check_markdown_references.py
       - name: Check the untrusted-content rule travels with the reading skills
         run: python3 scripts/check_untrusted_rule.py
+      - name: Check text I/O states its encoding
+        run: python3 scripts/check_text_encoding.py

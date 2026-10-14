@@ -116,7 +116,7 @@ class YouTubeClient:
     def _get(self, endpoint: str, params: dict) -> dict:
         params = {**params, "key": self._require_key()}
         try:
-            r = requests.get(f"{API_BASE}/{endpoint}", params=params, timeout=self.timeout)
+            r = requests.get(f"{API_BASE}/{endpoint}", params=params, allow_redirects=False, timeout=self.timeout)
         except requests.RequestException as e:
             err = YouTubeError(f"network error calling {endpoint}: {e}")
             err.status = 503

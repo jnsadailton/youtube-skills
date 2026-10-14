@@ -72,6 +72,13 @@ making changes. Conventions here are mandatory unless the user asks otherwise.
   A filled one is personal data, not a credential: `check_no_secrets.py` fails on
   any tracked copy marked `filled: yes`, and `sync_codex_marketplace.py` takes
   both from HEAD rather than the working tree and refuses to copy a filled one.
+- **A project `.env` may set credentials only.** `lib/_env.py` keeps an allowlist
+  (`_DOTENV_VARIABLES`); the custom-poster variable the DIY tier executes must come
+  from the launch environment, never from a file that can arrive with a clone. No
+  module may call `load_dotenv()` itself, and every authenticated request passes
+  `allow_redirects=False` because the Publora key rides a custom header and the
+  Apify token a query parameter, neither of which `requests` strips across hosts.
+  `scripts/check_security_boundaries.py` enforces all three.
 - Skill-local references live in `skills/<skill>/references/`. Cite from the skill
   with bare `references/X.md`. Cite root from skills with `../../references/X.md`.
 
@@ -96,9 +103,10 @@ making changes. Conventions here are mandatory unless the user asks otherwise.
   endpoint; the generic `get-upload-url` flow is not accepted for thumbnails), so
   `set_thumbnail()` / `publish_video(thumbnail=...)` only do the attach step
   given an existing `{mediaId, url}`. Do not claim a one-call thumbnail upload.
-- **No read layer ships by default.** The planner and title skills ask the user
-  to paste recent titles and stats. Any future YouTube data actor stays gated
-  behind `APIFY_TOKEN` with a paste fallback.
+- **The read layer is Google's own API, not Apify.** `lib/youtube_client.py`
+  reads `YOUTUBE_API_KEY` and calls the YouTube Data API v3. Keep the paste
+  fallback everywhere; the key is optional. This bundle has never read
+  `APIFY_TOKEN`.
 - Don't name competing third-party schedulers in committed files.
 
 ## Codex marketplace package
@@ -130,6 +138,7 @@ python3 scripts/check_no_secrets.py    # .gitignore does not stop a rename of a 
 python3 scripts/check_markdown_references.py  # run from inside the repo; it anchors on its own path
 python3 scripts/check_untrusted_rule.py  # the rule must sit in the skills, not only in references/
 python3 scripts/check_text_encoding.py  # a bare read_text() is cp1252 on Windows, mojibake or a crash
+python3 scripts/check_security_boundaries.py  # .env may not name an executable; no authenticated redirects
 python3 -m json.tool .codex-plugin/plugin.json >/dev/null
 python3 -m json.tool .agents/plugins/marketplace.json >/dev/null
 python3 -m json.tool .claude-plugin/plugin.json >/dev/null

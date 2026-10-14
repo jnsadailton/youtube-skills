@@ -26,3 +26,5 @@ jobs:
         run: python3 scripts/check_untrusted_rule.py
       - name: Check text I/O states its encoding
         run: python3 scripts/check_text_encoding.py
+      - name: Check the security boundaries stay closed
+        run: python3 scripts/check_security_boundaries.py

@@ -214,6 +214,21 @@ The thumbnail drives click-through more than anything else. The Community Post W
 
 Setup: drop `PIXFARO_TOKEN=pf_live_...` into your `.env`. The thin client at `lib/pixfaro_client.py` and the wrappers `lib.illustrate(prompt, kind="thumbnail")` / `lib.refine(image_id, instruction)` return a hosted URL that flows straight into `lib.publish(..., media_urls=[url])`. `refine` edits a prior image by its id (cheaper than regenerating); results carry `cost`, `balance_after`, and a `premium` flag so the skills never quietly spend on a pricey model.
 
+## Optional: read real YouTube data
+
+`yt-audience-insights` reads comments, video and channel stats and the trending list through the **YouTube Data API v3**, Google's own, not Apify. Without a key it asks you to paste the numbers, so nothing breaks.
+
+Setup, with a shell:
+
+```
+YOUTUBE_API_KEY=AIza_your_key_here
+```
+
+The key is free and needs no billing: create a project, enable "YouTube Data API v3", create an API key. [Console](https://console.cloud.google.com/apis/library/youtube.googleapis.com) · [Credentials](https://console.cloud.google.com/apis/credentials).
+
+**On claude.ai there is no read path for this bundle**, and that is worth saying plainly rather than leaving you to discover it. The sibling bundles read through Apify, which now publishes an MCP server you can add as a connector; this one reads through Google, which publishes no such thing. A skill on claude.ai has no environment to hold `YOUTUBE_API_KEY` and no process to call the API with, so the reading skills there ask you to paste titles, stats or comments. The draft quality is the same; it costs you a copy-paste.
+
+If that matters to you, the honest options are to run this bundle in Claude Code with a `.env`, or to open an issue asking for an Apify YouTube actor to be wired in as a second read path.
 ## Voice rules
 
 Every skill follows these rules automatically:

@@ -62,6 +62,15 @@ returned as a copy-paste block (title + description, hook script, thumbnail
 brief, or community post) for you to use in YouTube Studio. Great for trying the
 skills before committing to any backend.
 
+### Reading YouTube data (orthogonal to the tiers above)
+
+`yt-audience-insights` and the planner read comments, video and channel stats
+and trending through the YouTube Data API v3, gated on `YOUTUBE_API_KEY`. That
+is Google's API, not Apify, so **there is no connector path**: the sibling
+bundles can be read on claude.ai through Apify's MCP server, and this one
+cannot. On claude.ai, ask the user to paste titles, stats or comments and say
+why. With neither key nor paste, do not estimate the numbers.
+
 ### Tier 1 - Publora auto-upload (recommended, ~2 min)
 
 On approval, the writer skills upload and schedule the video you supply via the
